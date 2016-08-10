@@ -41,3 +41,6 @@ captures/
 
 # Google
 .google/
+
+# Application
+Application/build

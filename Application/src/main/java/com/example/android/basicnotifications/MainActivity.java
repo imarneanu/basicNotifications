@@ -8,7 +8,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
-import android.support.v4.app.RemoteInput;
 import android.view.View;
 
 /**
@@ -86,6 +85,19 @@ public class MainActivity extends Activity {
         builder.setContentTitle("BasicNotifications Sample");
         builder.setContentText("Time to learn about notifications!");
         builder.setSubText("Tap to view documentation about notifications.");
+
+        // Build an intent for an action to view a map
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW);
+        Uri geoUri = Uri.parse("geo:46.771210,23.623635");
+        mapIntent.setData(geoUri);
+        PendingIntent mapPendingIntent = PendingIntent.getActivity(this, 0, mapIntent, 0);
+
+        // Phone notification action
+        builder.addAction(android.R.drawable.ic_dialog_map, "Map", mapPendingIntent);
+        // Wearable specific notification
+        NotificationCompat.Action action = new NotificationCompat.Action.Builder(
+                android.R.drawable.ic_dialog_map, "Mapzz", mapPendingIntent).build();
+        builder.extend(new NotificationCompat.WearableExtender().addAction(action));
         // END_INCLUDE (build_notification)
 
         // BEGIN_INCLUDE(send_notification)
