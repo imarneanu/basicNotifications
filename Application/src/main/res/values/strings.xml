@@ -19,5 +19,12 @@ limitations under the License.
     <string name="map_intent_notification">Map intent notification</string>
     <string name="background_notification">Background notification</string>
     <string name="expandable_notification">Expandable notification</string>
+    <string name="voice_reply_notification">Voice reply notification</string>
+
+    <string-array name="reply_choices">
+        <item>Yes</item>
+        <item>No</item>
+        <item>So and so</item>
+    </string-array>
 
 </resources>

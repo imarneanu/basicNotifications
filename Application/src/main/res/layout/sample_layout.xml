@@ -47,4 +47,11 @@ limitations under the License.
         android:layout_gravity="center"
         android:onClick="sendExpandableNotification"
         android:text="@string/expandable_notification" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:onClick="sendVoiceReplyNotification"
+        android:text="@string/voice_reply_notification" />
 </LinearLayout>

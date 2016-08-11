@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
+import android.support.v4.app.RemoteInput;
 import android.view.View;
 
 /**
@@ -23,6 +24,9 @@ public class MainActivity extends Activity {
     public static final int MAP_INTENT_NOTIFICATION = 2;
     public static final int BACKGROUND_NOTIFICATION = 3;
     public static final int EXPANDABLE_NOTIFICATION = 4;
+    public static final int VOICE_REPLY_NOTIFICATION = 5;
+
+    public static final String EXTRA_VOICE_REPLY = "extra_voice_reply";
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -207,5 +211,44 @@ public class MainActivity extends Activity {
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(
                 getApplicationContext());
         notificationManager.notify(EXPANDABLE_NOTIFICATION, builder.build());
+    }
+
+    public void sendVoiceReplyNotification(View view) {
+        Intent intent = new Intent(Intent.ACTION_VIEW,
+                Uri.parse("http://developer.android.com/reference/android/app/Notification.html"));
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.drawable.ic_stat_notification)
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true)
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher))
+                .setContentTitle("VoiceReplyNotification Sample")
+                .setContentText("Time to learn about voice reply!")
+                .setSubText("Tap to view documentation about notifications.");
+
+        /**
+         * Notification reply
+         * - touch one of these notifications and it will expand to show more information
+         * - on Android wear the content will automatically expand to fil the display, since there
+         * is more vertical space available
+         * - emoji reply is supported by Android Wear, automatically handled and sent to the app as
+         * standard emoji unicode characters
+         * - choices reply is available by setting a set of pre canned replies using a string array
+         * NOTE: Don't forget to add the ReplyActivity class in the AndroidManifest!
+         */
+        RemoteInput remoteInput = new RemoteInput.Builder(EXTRA_VOICE_REPLY).setLabel("Reply")
+                .setChoices(getResources().getStringArray(R.array.reply_choices)).build();
+        Intent replyIntent = new Intent(this, ReplyActivity.class);
+        PendingIntent replyPendingIntent = PendingIntent.getActivity(this, 0, replyIntent, 0);
+
+        NotificationCompat.Action replyAction = new NotificationCompat.Action.Builder(
+                android.R.drawable.ic_menu_revert, "Reply Action", replyPendingIntent)
+                .addRemoteInput(remoteInput).build();
+        builder.extend(new NotificationCompat.WearableExtender().addAction(replyAction));
+
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(
+                getApplicationContext());
+        notificationManager.notify(VOICE_REPLY_NOTIFICATION, builder.build());
     }
 }
