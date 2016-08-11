@@ -19,18 +19,18 @@ public class MainActivity extends Activity {
      * This value needs to be unique within this app, but it doesn't need to be
      * unique system-wide.
      */
-    public static final int NOTIFICATION_ID = 1;
+    public static final int BASIC_NOTIFICATION = 1;
+    public static final int MAP_INTENT_NOTIFICATION = 2;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sample_layout);
-
     }
 
     /**
      * Send a sample notification using the NotificationCompat API.
      */
-    public void sendNotification(View view) {
+    public void sendBasicNotification(View view) {
 
         // BEGIN_INCLUDE(build_action)
         /** Create an intent that will be fired when the user clicks the notification.
@@ -85,6 +85,31 @@ public class MainActivity extends Activity {
         builder.setContentTitle("BasicNotifications Sample");
         builder.setContentText("Time to learn about notifications!");
         builder.setSubText("Tap to view documentation about notifications.");
+        // END_INCLUDE (build_notification)
+
+        // BEGIN_INCLUDE(send_notification)
+        /**
+         * Send the notification. This will immediately display the notification icon in the
+         * notification bar.
+         */
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getApplicationContext());
+        notificationManager.notify(BASIC_NOTIFICATION, builder.build());
+        // END_INCLUDE(send_notification)
+    }
+
+    public void sendMapIntentNotification(View view) {
+        Intent intent = new Intent(Intent.ACTION_VIEW,
+                Uri.parse("http://developer.android.com/reference/android/app/Notification.html"));
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.drawable.ic_stat_notification)
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true)
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher))
+                .setContentTitle("MapIntentNotifications Sample")
+                .setContentText("Time to learn about actions!")
+                .setSubText("Tap to view documentation about notifications.");
 
         // Build an intent for an action to view a map
         Intent mapIntent = new Intent(Intent.ACTION_VIEW);
@@ -98,15 +123,8 @@ public class MainActivity extends Activity {
         NotificationCompat.Action action = new NotificationCompat.Action.Builder(
                 android.R.drawable.ic_dialog_map, "Mapzz", mapPendingIntent).build();
         builder.extend(new NotificationCompat.WearableExtender().addAction(action));
-        // END_INCLUDE (build_notification)
 
-        // BEGIN_INCLUDE(send_notification)
-        /**
-         * Send the notification. This will immediately display the notification icon in the
-         * notification bar.
-         */
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getApplicationContext());
-        notificationManager.notify(NOTIFICATION_ID, builder.build());
-        // END_INCLUDE(send_notification)
+        notificationManager.notify(MAP_INTENT_NOTIFICATION, builder.build());
     }
 }
