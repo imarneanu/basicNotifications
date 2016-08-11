@@ -17,7 +17,7 @@ limitations under the License.
     android:id="@+id/coreLayout"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_gravity="center_vertical"
+    android:layout_gravity="center"
     android:orientation="vertical">
 
     <Button
@@ -33,5 +33,12 @@ limitations under the License.
         android:layout_gravity="center"
         android:onClick="sendMapIntentNotification"
         android:text="@string/map_intent_notification" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:onClick="sendBackgroundNotification"
+        android:text="@string/background_notification" />
 
 </LinearLayout>

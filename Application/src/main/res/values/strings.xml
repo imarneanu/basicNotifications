@@ -17,5 +17,6 @@ limitations under the License.
 
     <string name="basic_notification">Basic notification</string>
     <string name="map_intent_notification">Map intent notification</string>
+    <string name="background_notification">Background notification</string>
 
 </resources>

@@ -21,6 +21,7 @@ public class MainActivity extends Activity {
      */
     public static final int BASIC_NOTIFICATION = 1;
     public static final int MAP_INTENT_NOTIFICATION = 2;
+    public static final int BACKGROUND_NOTIFICATION = 3;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -117,14 +118,57 @@ public class MainActivity extends Activity {
         mapIntent.setData(geoUri);
         PendingIntent mapPendingIntent = PendingIntent.getActivity(this, 0, mapIntent, 0);
 
-        // Phone notification action
+        /**
+         * Phone notification action
+         * - visible both on phone and wearable automatically
+         * - the intents run on the phone, not the wearable
+         * Note: visible on the Wear as long as there is no WearableExtender set
+         */
         builder.addAction(android.R.drawable.ic_dialog_map, "Map", mapPendingIntent);
-        // Wearable specific notification
+
+        /**
+         * Wearable specific action
+         * - visible only on the wearable
+         * - phone notification not visible anymore as long as the WearableExtender is set
+         */
         NotificationCompat.Action action = new NotificationCompat.Action.Builder(
                 android.R.drawable.ic_dialog_map, "Mapzz", mapPendingIntent).build();
         builder.extend(new NotificationCompat.WearableExtender().addAction(action));
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getApplicationContext());
         notificationManager.notify(MAP_INTENT_NOTIFICATION, builder.build());
+    }
+
+    public void sendBackgroundNotification(View view) {
+        Intent intent = new Intent(Intent.ACTION_VIEW,
+                Uri.parse("http://developer.android.com/reference/android/app/Notification.html"));
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.drawable.ic_stat_notification)
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true)
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher))
+                .setContentTitle("BackgroundNotifications Sample")
+                .setContentText("Time to learn about backgrounds!")
+                .setSubText("Tap to view documentation about notifications.");
+
+        /**
+         * Notification background
+         * - the large icon is used as the background image by default on a Wearable notification
+         * - setBackground() can handle high resolution images
+         * Recommendations:
+         * - use 400x400 images for a static background
+         * - use 640x400 images for parallax (left and right edges are used to simulate background movement)
+         * - save resources in the drawable-nodpi folder to avoid them being automatically resized by the Android framework
+         * - store resources in the drawable-hdpi folder when using the setContentIcon() method
+         */
+        NotificationCompat.WearableExtender extender = new NotificationCompat.WearableExtender()
+                .setHintHideIcon(true)
+                .setBackground(BitmapFactory.decodeResource(getResources(), R.drawable.android));
+        builder.extend(extender);
+
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getApplicationContext());
+        notificationManager.notify(BACKGROUND_NOTIFICATION, builder.build());
     }
 }
