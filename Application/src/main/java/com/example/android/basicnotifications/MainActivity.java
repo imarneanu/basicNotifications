@@ -27,8 +27,12 @@ public class MainActivity extends Activity {
     public static final int EXPANDABLE_NOTIFICATION = 4;
     public static final int VOICE_REPLY_NOTIFICATION = 5;
     public static final int MULTIPLE_PAGES_NOTIFICATION = 6;
+    public static final int STACK_NOTIFICATION1 = 7;
+    public static final int STACK_NOTIFICATION2 = 8;
+    public static final int STACK_SUMMARY_NOTIFICATION = 9;
 
     public static final String EXTRA_VOICE_REPLY = "extra_voice_reply";
+    private final static String GROUP_KEY_EMAILS = "group_key_emails";
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -293,5 +297,48 @@ public class MainActivity extends Activity {
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(
                 getApplicationContext());
         notificationManager.notify(MULTIPLE_PAGES_NOTIFICATION, notification);
+    }
+
+    public void sendStacksNotification(View view) {
+        Intent intent = new Intent(Intent.ACTION_VIEW,
+                Uri.parse("http://developer.android.com/reference/android/app/Notification.html"));
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+        /**
+         * Notification stacks
+         * - create a series of notifications and stack them together
+         * - the notifications are initially shown as a single card that can be expanded into
+         * multiple cards by tapping it
+         */
+        Notification firstNotification = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.drawable.ic_stat_notification)
+                .setContentTitle("StacksNotification Sample1")
+                .setContentText("Details about using stacks")
+                .setGroup(GROUP_KEY_EMAILS).build();
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(
+                getApplicationContext());
+        notificationManager.notify(STACK_NOTIFICATION1, firstNotification);
+
+        Notification secondNotification = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.drawable.ic_stat_notification)
+                .setContentTitle("StacksNotification Sample2")
+                .setContentText("More details about using stacks")
+                .setGroup(GROUP_KEY_EMAILS).build();
+        notificationManager.notify(STACK_NOTIFICATION2, secondNotification);
+
+        Notification summaryNotification = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.drawable.ic_stat_notification)
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true)
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher))
+                .setStyle(new NotificationCompat.InboxStyle()
+                        .addLine("StacksNotification Sample1")
+                        .addLine("StacksNotification Sample2")
+                        .setBigContentTitle("2 new samples")
+                        .setSummaryText("Tap to view documentation about notifications."))
+                .setGroup(GROUP_KEY_EMAILS)
+                .setGroupSummary(true).build();
+
+        notificationManager.notify(STACK_SUMMARY_NOTIFICATION, summaryNotification);
     }
 }

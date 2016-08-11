@@ -61,4 +61,11 @@ limitations under the License.
         android:layout_gravity="center"
         android:onClick="sendPagesNotification"
         android:text="@string/pages_notification" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:onClick="sendStacksNotification"
+        android:text="@string/stacks_notification" />
 </LinearLayout>

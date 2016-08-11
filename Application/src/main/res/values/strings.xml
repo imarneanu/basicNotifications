@@ -21,6 +21,7 @@ limitations under the License.
     <string name="expandable_notification">Expandable notification</string>
     <string name="voice_reply_notification">Voice reply notification</string>
     <string name="pages_notification">Multiple pages notification</string>
+    <string name="stacks_notification">Stacks notification</string>
 
     <string-array name="reply_choices">
         <item>Yes</item>
