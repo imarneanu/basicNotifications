@@ -1,6 +1,7 @@
 package com.example.android.basicnotifications;
 
 import android.app.Activity;
+import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
@@ -25,6 +26,7 @@ public class MainActivity extends Activity {
     public static final int BACKGROUND_NOTIFICATION = 3;
     public static final int EXPANDABLE_NOTIFICATION = 4;
     public static final int VOICE_REPLY_NOTIFICATION = 5;
+    public static final int MULTIPLE_PAGES_NOTIFICATION = 6;
 
     public static final String EXTRA_VOICE_REPLY = "extra_voice_reply";
 
@@ -250,5 +252,46 @@ public class MainActivity extends Activity {
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(
                 getApplicationContext());
         notificationManager.notify(VOICE_REPLY_NOTIFICATION, builder.build());
+    }
+
+    public void sendPagesNotification(View view) {
+        Intent intent = new Intent(Intent.ACTION_VIEW,
+                Uri.parse("http://developer.android.com/reference/android/app/Notification.html"));
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.drawable.ic_stat_notification)
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true)
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher))
+                .setContentTitle("PagesNotification Sample")
+                .setContentText("Time to learn about pages!")
+                .setSubText("Tap to view documentation about notifications.");
+
+        /**
+         * Notification pages
+         * - add extra pages of information to a notification
+         * - show the extra information on swipe left
+         * - pages can be added one by one or as a Collection
+         */
+        NotificationCompat.BigTextStyle secondPageStyle = new NotificationCompat.BigTextStyle();
+        secondPageStyle.setBigContentTitle("Page 2").bigText("Second page notification");
+
+        Notification secondPageNotification = new NotificationCompat.Builder(this)
+                .setStyle(secondPageStyle).build();
+
+        NotificationCompat.BigTextStyle thirdPageStyle = new NotificationCompat.BigTextStyle();
+        thirdPageStyle.setBigContentTitle("Page 3").bigText("Third page notification");
+
+        Notification thirdPageNotification = new NotificationCompat.Builder(this)
+                .setStyle(thirdPageStyle).build();
+
+        Notification notification = builder.extend(new NotificationCompat.WearableExtender()
+                .addPage(secondPageNotification)
+                .addPage(thirdPageNotification)).build();
+
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(
+                getApplicationContext());
+        notificationManager.notify(MULTIPLE_PAGES_NOTIFICATION, notification);
     }
 }
