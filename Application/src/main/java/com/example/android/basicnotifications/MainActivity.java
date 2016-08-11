@@ -22,6 +22,7 @@ public class MainActivity extends Activity {
     public static final int BASIC_NOTIFICATION = 1;
     public static final int MAP_INTENT_NOTIFICATION = 2;
     public static final int BACKGROUND_NOTIFICATION = 3;
+    public static final int EXPANDABLE_NOTIFICATION = 4;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,7 +94,8 @@ public class MainActivity extends Activity {
          * Send the notification. This will immediately display the notification icon in the
          * notification bar.
          */
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getApplicationContext());
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(
+                getApplicationContext());
         notificationManager.notify(BASIC_NOTIFICATION, builder.build());
         // END_INCLUDE(send_notification)
     }
@@ -135,7 +137,8 @@ public class MainActivity extends Activity {
                 android.R.drawable.ic_dialog_map, "Mapzz", mapPendingIntent).build();
         builder.extend(new NotificationCompat.WearableExtender().addAction(action));
 
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getApplicationContext());
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(
+                getApplicationContext());
         notificationManager.notify(MAP_INTENT_NOTIFICATION, builder.build());
     }
 
@@ -159,8 +162,10 @@ public class MainActivity extends Activity {
          * - setBackground() can handle high resolution images
          * Recommendations:
          * - use 400x400 images for a static background
-         * - use 640x400 images for parallax (left and right edges are used to simulate background movement)
-         * - save resources in the drawable-nodpi folder to avoid them being automatically resized by the Android framework
+         * - use 640x400 images for parallax (left and right edges are used to simulate background
+         * movement)
+         * - save resources in the drawable-nodpi folder to avoid them being automatically resized
+         * by the Android framework
          * - store resources in the drawable-hdpi folder when using the setContentIcon() method
          */
         NotificationCompat.WearableExtender extender = new NotificationCompat.WearableExtender()
@@ -168,7 +173,39 @@ public class MainActivity extends Activity {
                 .setBackground(BitmapFactory.decodeResource(getResources(), R.drawable.android));
         builder.extend(extender);
 
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getApplicationContext());
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(
+                getApplicationContext());
         notificationManager.notify(BACKGROUND_NOTIFICATION, builder.build());
+    }
+
+    public void sendExpandableNotification(View view) {
+        Intent intent = new Intent(Intent.ACTION_VIEW,
+                Uri.parse("http://developer.android.com/reference/android/app/Notification.html"));
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.drawable.ic_stat_notification)
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true)
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher))
+                .setContentTitle("ExpandableNotification Sample")
+                .setContentText("Time to learn about expandable notifications!")
+                .setSubText("Tap to view documentation about notifications.");
+
+        /**
+         * Notification styles
+         * - touch one of these notifications and it will expand to show more information
+         * - on Android wear the content will automatically expand to fil the display, since there
+         * is more vertical space available
+         */
+        NotificationCompat.BigTextStyle bigTextStyle = new NotificationCompat.BigTextStyle();
+        bigTextStyle.bigText("Notification Big Text that should be long enough to extend on the " +
+                "whole screen. So make this text longer by adding more text. Is this long enough? " +
+                "Should I keep writing?");
+        builder.setStyle(bigTextStyle);
+
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(
+                getApplicationContext());
+        notificationManager.notify(EXPANDABLE_NOTIFICATION, builder.build());
     }
 }

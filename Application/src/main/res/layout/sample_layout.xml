@@ -41,4 +41,10 @@ limitations under the License.
         android:onClick="sendBackgroundNotification"
         android:text="@string/background_notification" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:onClick="sendExpandableNotification"
+        android:text="@string/expandable_notification" />
 </LinearLayout>
